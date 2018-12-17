@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+   redis-1:
+      hostname: redis-1
+      image: redis:5.0.3
+      expose:
+        - 6379
+
+   redis-demo-app:
+      build: 
+         context: .
+         dockerfile: Dockerfile-app
+      hostname: redis-app
+      image: redis-app-demo
+      command: /bin/bash -c "sleep 20 && java -Djava.security.egd=file:/dev/./urandom -jar redis.jar"
+      links:
+         - redis-1
+      depends_on:
+         - redis-1
+      ports:
+         - 8081:8080
+      environment:
+         - SPRING_REDIS_HOST=redis-1         
+
+        
+
+
